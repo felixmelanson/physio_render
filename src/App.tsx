@@ -5,13 +5,6 @@ import { ANIMATED, LAB } from "./data/animated";
 import LineageDiagram from "./components/LineageDiagram";
 import { SiteNav, type PageId } from "./components/SiteNav";
 
-const TITLES: Record<PageId, string> = {
-  flowchart: "Flowchart · Stem cell lineages",
-  static: "Static (Old) · Stem cell lineages",
-  animated: "Animated · Stem cell lineages",
-  lab: "Lab · Stem cell lineages",
-};
-
 const PAGE_IDS: PageId[] = ["animated", "lab", "static", "flowchart"];
 
 function pageFromHash(hash: string): PageId {
@@ -51,7 +44,7 @@ export default function App() {
   const isFirstRender = useRef(true);
 
   useEffect(() => {
-    document.title = TITLES[page];
+    document.title = "Cell Sandbox";
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
