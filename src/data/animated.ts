@@ -136,7 +136,7 @@ const piezoDefault = (path: string) => (PIEZO_DEFAULTS as Record<string, string>
 const DEFAULT_STYLE: StyleKey = "clay";
 const CLAY_ONLY: StyleKey[] = ["atlas", "clay"];
 const allowed = (style: StyleKey | undefined, ids?: StyleKey[]) =>
-  style && (!ids || ids.includes(style)) ? style : ids?.includes(DEFAULT_STYLE) ? DEFAULT_STYLE : "atlas";
+  style && (!ids || ids.includes(style)) ? style : !ids || ids.includes(DEFAULT_STYLE) ? DEFAULT_STYLE : "atlas";
 
 const spec = (id: string, name: string, slots: ColorSlot[] = [], membranes = false): LiveItem => {
   const styleIds = membranes ? undefined : CLAY_ONLY;
