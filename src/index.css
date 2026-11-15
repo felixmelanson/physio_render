@@ -1,0 +1,768 @@
+@import "tailwindcss";
+
+@theme {
+  /* The flowchart's own label face, so the interface reads as part of the figure. */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --ink: #2a2a2a; /* the flowchart's label colour */
+  --line: #4b5b6a; /* the flowchart's connector colour */
+  --muted: #5f6c77;
+  --rule: #e1e5e8;
+  --rule-strong: #a9b3bb;
+  --wash: #f4f6f8;
+  --scrim: rgb(27 35 43 / 0.28);
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-edge: rgb(255 255 255 / 0.7);
+  --glass-shadow: 0 32px 80px -24px rgb(12 18 24 / 0.45), 0 2px 8px rgb(12 18 24 / 0.1);
+  --control: rgb(255 255 255 / 0.6);
+  --clay-stage: #e8e4de;
+  --clay-stage-shadow: rgb(68 59 50 / 0.2);
+  --clay-art-shadow: rgb(45 37 30 / 0.24);
+  --ease-out: cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+/* dark mode: pure black */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #000000;
+  --ink: #e9ecef;
+  --line: #9aa8b5;
+  --muted: #8b959d;
+  --rule: #1d2124;
+  --rule-strong: #3b4248;
+  --wash: #0b0c0d;
+  --scrim: rgb(0 0 0 / 0.45);
+  --glass: rgb(22 24 26 / 0.5);
+  --glass-edge: rgb(255 255 255 / 0.1);
+  --glass-shadow: 0 32px 80px -24px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(255 255 255 / 0.04);
+  --control: rgb(255 255 255 / 0.06);
+  --clay-stage: #171513;
+  --clay-stage-shadow: rgb(0 0 0 / 0.7);
+  --clay-art-shadow: rgb(0 0 0 / 0.8);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ------------------------------------------------------------------ */
+/* Page tabs                                                           */
+/* ------------------------------------------------------------------ */
+
+.site-header {
+  position: relative;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 50%;
+  right: clamp(0.5rem, 2vw, 1.25rem);
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+@media (hover: hover) {
+  .theme-toggle:hover {
+    color: var(--ink);
+    background: var(--wash);
+  }
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--line);
+  outline-offset: 2px;
+}
+
+/* the tabs leave room for the toggle on narrow screens */
+@media (max-width: 560px) {
+  .site-nav {
+    padding-right: 2.75rem;
+  }
+}
+
+.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.25rem, 6vw, 3rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 1rem 0.25rem 0.9375rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  color: var(--muted);
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* bold numeral, after the flowchart's bold panel letters */
+.site-nav a b {
+  font-weight: 700;
+}
+
+/* current page: a connector-weight rule sitting on the header line */
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 3px;
+  background: var(--line);
+  transform: scaleX(0);
+  transition: transform 0.22s var(--ease-out);
+}
+
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.site-nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) {
+  .site-nav a:hover {
+    color: var(--ink);
+  }
+}
+
+.site-nav a:focus-visible {
+  outline: 2px solid var(--line);
+  outline-offset: -5px;
+  border-radius: 8px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Catalogue grid                                                      */
+/* ------------------------------------------------------------------ */
+
+.catalogue {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: 1rem 0.75rem 3rem;
+}
+
+.catalogue__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 0.75rem;
+}
+
+@media (min-width: 560px) {
+  .catalogue {
+    padding: 1.5rem 1.25rem 4rem;
+  }
+
+  .catalogue__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+  }
+}
+
+@media (min-width: 820px) {
+  .catalogue {
+    padding: 1.75rem 1.5rem 4.5rem;
+  }
+
+  .catalogue__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.75rem 1.25rem;
+  }
+}
+
+@media (min-width: 1060px) {
+  .catalogue__grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+  }
+}
+
+.tile {
+  display: block;
+  width: 100%;
+  text-align: center;
+  cursor: zoom-in;
+  scroll-margin: 1rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tile__stage {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--bg);
+  transition:
+    border-color 0.18s,
+    background-color 0.18s;
+}
+
+/* Static SVG artwork uses the same soft, dimensional presentation as Clay
+   canvas renders, without changing the source illustration colours. */
+.catalogue--static .tile__stage svg {
+  filter: none;
+}
+
+.catalogue--static .tile__stage .cell-figure--clay {
+  filter: saturate(0.72) contrast(0.98) brightness(0.98) drop-shadow(0 7px 5px var(--clay-art-shadow));
+}
+
+.tile__stage svg {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.28s var(--ease-out);
+}
+
+.tile__name {
+  display: block;
+  margin-top: 0.625rem;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+@media (hover: hover) {
+  .tile:hover .tile__stage {
+    border-color: var(--rule-strong);
+    background: var(--wash);
+  }
+
+  .tile:hover .tile__stage svg {
+    transform: scale(1.06);
+  }
+}
+
+.tile:active .tile__stage {
+  background: var(--wash);
+}
+
+.tile:active .tile__stage svg {
+  transform: scale(1.02);
+}
+
+.tile:focus-visible {
+  outline: none;
+}
+
+.tile:focus-visible .tile__stage {
+  outline: 2px solid var(--line);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Popup                                                               */
+/* ------------------------------------------------------------------ */
+
+/* hold the page still behind the popup; the padding stands in for the scrollbar */
+html.has-lightbox {
+  overflow: hidden;
+}
+
+html.has-lightbox body {
+  padding-right: var(--scroll-gutter, 0px);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  /* dragging on the popup must not scroll the page behind it; pinch-zoom stays available */
+  touch-action: pinch-zoom;
+}
+
+/* only while open, so the closed dialog keeps its native display: none */
+.lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.lightbox::backdrop {
+  background: transparent;
+}
+
+.lightbox:focus {
+  outline: none;
+}
+
+.lightbox__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  cursor: zoom-out;
+}
+
+/* a square stage plus the name bar, as large as the viewport allows */
+.lightbox__panel {
+  position: relative;
+  width: min(100%, 960px, calc(100vh - 8.5rem));
+  width: min(100%, 960px, calc(100dvh - 8.5rem));
+  border-radius: 20px;
+  /* frosted glass: the page shows through, blurred */
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  backdrop-filter: blur(28px) saturate(1.6);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-shadow);
+}
+
+.lightbox__stage {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  cursor: zoom-out;
+}
+
+.lightbox__stage--static .lightbox__art svg {
+  filter: none;
+}
+
+.lightbox__stage--static .lightbox__art .cell-figure--clay {
+  filter: saturate(0.72) contrast(0.98) brightness(0.98) drop-shadow(0 12px 9px var(--clay-art-shadow));
+}
+
+.static__tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.static__tools .controls__label {
+  margin: 0;
+}
+
+.static__tools .seg {
+  width: 10rem;
+}
+
+.static__tools .seg__btn[aria-pressed="true"] {
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+
+.lightbox__art,
+.lightbox__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox__art[data-dir="1"] {
+  animation: art-from-right 0.26s var(--ease-out) both;
+}
+
+.lightbox__art[data-dir="-1"] {
+  animation: art-from-left 0.26s var(--ease-out) both;
+}
+
+@keyframes art-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(4%);
+  }
+}
+
+@keyframes art-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-4%);
+  }
+}
+
+.lightbox__bar {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem 0.875rem;
+}
+
+.lightbox__name {
+  text-align: center;
+  font-size: clamp(1.375rem, 1.05rem + 1.4vw, 1.875rem);
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  z-index: 1;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  color: var(--line);
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .icon-button:hover {
+    background: var(--control);
+    color: var(--ink);
+  }
+}
+
+.icon-button:active {
+  background: var(--control);
+  color: var(--ink);
+}
+
+.icon-button:focus-visible {
+  outline: 2px solid var(--line);
+  outline-offset: 2px;
+}
+
+/* short viewports (a phone on its side): give the artwork the height back */
+@media (max-height: 520px) {
+  .lightbox__panel {
+    width: min(100%, 960px, calc(100vh - 6.25rem));
+    width: min(100%, 960px, calc(100dvh - 6.25rem));
+  }
+
+  .lightbox__name {
+    font-size: 1.0625rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion                                                      */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav a,
+  .site-nav a::after,
+  .tile__stage,
+  .tile__stage svg,
+  .icon-button {
+    transition: none;
+  }
+
+  .tile:hover .tile__stage svg,
+  .tile:active .tile__stage svg {
+    transform: none;
+  }
+
+  .lightbox__art[data-dir] {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Live (animated) pages                                               */
+/* ------------------------------------------------------------------ */
+
+.live__tools {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.live__toggle {
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .live__toggle:hover {
+    border-color: var(--rule-strong);
+    color: var(--ink);
+  }
+}
+
+.live__section + .live__section {
+  margin-top: 2.5rem;
+}
+
+.live__heading {
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.live__stage {
+  position: relative;
+}
+
+.live__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.28s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .tile:hover .live__canvas {
+    transform: scale(1.04);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Live popup: stage + style / colour controls                         */
+/* ------------------------------------------------------------------ */
+
+.live__panel--controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 1200px);
+  max-height: calc(100dvh - 1.5rem);
+  overflow: auto;
+}
+
+@media (min-width: 900px) {
+  .live__panel--controls {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    width: min(100%, 1240px, calc(100dvh - 8.5rem + 300px));
+    overflow: hidden;
+  }
+
+  .live__panel--controls .controls {
+    border-left: 1px solid var(--glass-edge);
+    border-top: 0;
+    overflow-y: auto;
+    max-height: calc(100dvh - 1.5rem);
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  padding: 3.25rem 1.125rem 1.25rem;
+  border-top: 1px solid var(--glass-edge);
+  font-size: 0.875rem;
+}
+
+.controls__label {
+  margin-bottom: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.seg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--control);
+}
+
+.seg__btn {
+  padding: 0.4rem 0;
+  border-radius: 7px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.seg__btn[aria-checked="true"] {
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+
+.swatch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 8px;
+  background: var(--control);
+  cursor: pointer;
+}
+
+.swatch input[type="color"] {
+  flex: none;
+  width: 1.625rem;
+  height: 1.625rem;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.swatch input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.swatch input[type="color"]::-webkit-color-swatch {
+  border: 1px solid rgb(127 127 127 / 0.35);
+  border-radius: 6px;
+}
+
+.swatch input[type="color"]::-moz-color-swatch {
+  border: 1px solid rgb(127 127 127 / 0.35);
+  border-radius: 6px;
+}
+
+.swatch__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.swatch[data-changed] .swatch__name {
+  font-weight: 600;
+}
+
+.swatch__reset {
+  margin-left: auto;
+  padding: 0 0.25rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.controls__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pill {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: var(--control);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.pill:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.controls__note {
+  margin: -0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* the live stage stays transparent so the frosted panel shows behind the artwork */
+.lightbox__stage.live__stage {
+  background: transparent;
+}
+
+/* item-wide colour shift */
+.shift {
+  display: grid;
+  grid-template-columns: 4.6rem minmax(0, 1fr) 2.2rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.8125rem;
+}
+
+.shift__val {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.shift__range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.shift__range--hue {
+  background: linear-gradient(90deg, #f0f, #f00 16.6%, #ff0 33.3%, #0f0 50%, #0ff 66.6%, #00f 83.3%, #f0f);
+}
+
+.shift__range--sat {
+  background: linear-gradient(90deg, #8a8a8a, #3aa8a0);
+}
+
+.shift__range--light {
+  background: linear-gradient(90deg, #111, #7a8a96, #fff);
+}
+
+.shift__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+}
+
+.shift__range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+}
+
+.controls__mini {
+  margin-left: 0.5rem;
+  font-size: 0.6875rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
